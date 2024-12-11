@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Excel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    </style>
+
+</head>
+<body class="min-h-screen bg-red-50 relative">
+    <header class="container mx-auto">
+
+        <section class="h-[30vh] bg-green-200 flex justify-center items-center">
+            <h1 class="text-6xl font-bold text-center text-green-500">Export Excel</h1>
+        </section>
+    
+        <section class="mt-12 flex justify-center items-center">
+            <button id="exportEXcelBtn" type="button" class="px-8 py-2 bg-green-500 text-white rounded">
+                Export Excel
+            </button>
+        </section>
+    
+    </header>
+    
+    <footer class="bg-gray-100 py-4 fixed bottom-0 left-0 w-full">
+        <div class="text-center">
+            <p class="text-sm text-gray-600">
+                &copy; 2024 <span class="font-bold">Murat Eren Nar</span> | <a href="https://www.linkedin.com/in/muraterennar" target="_blank" class="text-blue-500 hover:text-green-700 font-bold">Linkten</a>
+            </p>
+        </div>
+    </footer>
+</body>
+
+<script>
+
+    let exportExcelBtn = document.getElementById('exportEXcelBtn');
+
+    exportExcelBtn.addEventListener('click', ()=>{
+        downloadExcel();
+    })
+
+    function downloadExcel() {
+    // Sunucuya GET isteği gönder
+    fetch('http://localhost:5161/api/ExcelExport/v2/export', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // Dosya formatını belirt
+        }
+    })
+    .then(response => response.blob())  // Cevabı blob (binary large object) formatında al
+    .then(blob => {
+        // Blob verisini kullanarak dosyayı indir
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = 'ExportedData.xlsx'; // İndirilecek dosyanın ismi
+        link.click();
+        URL.revokeObjectURL(url); // URL'yi temizle
+    })
+    .catch(error => console.error('Hata:', error)); // Hata durumunu yakala
+}
+
+</script>
+
+
+</html>
